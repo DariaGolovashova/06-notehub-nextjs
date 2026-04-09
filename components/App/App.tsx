@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useDebouncedCallback } from "use-debounce";
@@ -86,14 +87,12 @@ function App() {
         </header>
 
         {data && data.notes.length > 0 && <NoteList notes={data.notes} />}
-        {isModalOpen && (
-          <Modal onClose={() => setIsModalOpen(false)}>
-            <NoteForm
-              onSubmit={handleCreate}
-              onCancel={() => setIsModalOpen(false)}
-            />
-          </Modal>
-        )}
+        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+          <NoteForm
+            onSubmit={handleCreate}
+            onCancel={() => setIsModalOpen(false)}
+          />
+        </Modal>
       </div>
     </>
   );

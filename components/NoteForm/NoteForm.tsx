@@ -1,3 +1,4 @@
+"use client";
 import css from "./NoteForm.module.css";
 import { Formik, Form, Field, ErrorMessage as FormikError } from "formik";
 import * as Yup from "yup";
@@ -11,7 +12,7 @@ export interface NoteFormValues {
   tag: NoteTag;
 }
 
-interface NoteFormProps {
+export interface NoteFormProps {
   onSubmit: (values: NoteFormValues) => void;
   // onSubmit: () => void;
   onCancel: () => void;
@@ -30,7 +31,7 @@ function NoteForm({ onSubmit, onCancel }: NoteFormProps) {
 
   const mutation = useMutation({
     mutationFn: createNote,
-    onSuccess: (_, variables) => {
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
       onSubmit(variables);
     },

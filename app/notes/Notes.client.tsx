@@ -1,26 +1,69 @@
 "use client";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchNotes } from "@/lib/api";
+import { fetchNotes, FetchNotesResponse, FetchNotesParams } from "@/lib/api";
+import SearchBox from "@/components/SearchBox/SearchBox";
+import Pagination from "@/components/Pagination/Pagination";
+import Modal from "@/components/Modal/Modal";
+import NoteForm from "@/components/NoteForm/NoteForm";
+import NoteList from "@/components/NoteList/NoteList";
+import type { NoteFormValues } from "@/components/NoteForm/NoteForm";
 
 function NotesClient() {
+  const [search, setSearch] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  const [debouncedSearch, setDebouncedSearch] = useState<string>(search);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search), 500);
+    return () => clearTimeout(timer);
+  }, [search]);
+
   const { data, isLoading, error } = useQuery({
-    queryKey: ["notes"],
-    queryFn: () => fetchNotes(),
+    queryKey: ["notes", debouncedSearch, page],
+    queryFn: () =>
+      fetchNotes({
+        search: debouncedSearch,
+        page,
+        perPage: 10,
+      } as FetchNotesParams),
+    placeholderData: { notes: [], totalPages: 1 },
   });
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error loading notes</p>;
+  const handleCreateNote = (values: NoteFormValues) => {
+    console.log(values);
+    setIsModalOpen(false);
+  };
+
+  if (isLoading) return <p>Loading, please wait...</p>;
+  if (error) return <p>Could not fetch notes: {error.message}</p>;
 
   return (
-    <ul>
-      {data?.notes.map((note) => (
-        <li key={note.id}>
-          <h3>{note.title}</h3>
-          <Link href={`/notes/${note.id}`}>View details</Link>
-        </li>
-      ))}
-    </ul>
+    <div>
+      <SearchBox value={search} onChange={setSearch} />
+      {data?.notes.length ? (
+        <NoteList notes={data.notes} />
+      ) : (
+        <p> No notes found. </p>
+      )}
+      {data && data.totalPages > 1 && (
+        <Pagination
+          currentPage={page}
+          pageCount={data.totalPages}
+          onPageChange={setPage}
+        />
+      )}
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <NoteForm
+          onSubmit={handleCreateNote}
+          onCancel={() => setIsModalOpen(false)}
+        />
+      </Modal>
+      <button onClick={() => setIsModalOpen(true)}>Create Note</button>
+    </div>
   );
 }
 

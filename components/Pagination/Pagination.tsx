@@ -1,15 +1,16 @@
+"use client";
 import type { ComponentType } from "react";
-import ReactPaginateModule from "react-paginate";
-// import ReactPaginate from "react-paginate";
+// import ReactPaginateModule from "react-paginate";
+import ReactPaginate from "react-paginate";
 import type { ReactPaginateProps } from "react-paginate";
 import css from "./Pagination.module.css";
 
-type ModuleWithDefault<T> = { default: T };
-const ReactPaginate = (
-  ReactPaginateModule as unknown as ModuleWithDefault<
-    ComponentType<ReactPaginateProps>
-  >
-).default;
+// type ModuleWithDefault<T> = { default: T };
+// const ReactPaginate = (
+//   ReactPaginateModule as unknown as ModuleWithDefault<
+//     ComponentType<ReactPaginateProps>
+//   >
+// ).default;
 // const ReactPaginate: ComponentType<ReactPaginateProps> = (
 //   ReactPaginateModule as unknown as {
 //     default: ComponentType<ReactPaginateProps>;
