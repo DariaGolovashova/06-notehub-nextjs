@@ -1,5 +1,5 @@
 "use client";
-import Link from "next/link";
+// import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchNotes, FetchNotesResponse, FetchNotesParams } from "@/lib/api";
@@ -35,7 +35,8 @@ function NotesClient() {
         page,
         perPage: 10,
       } as FetchNotesParams),
-    placeholderData: { notes: [], totalPages: 1 },
+    // placeholderData: { notes: [], totalPages: 1 },
+    placeholderData: (prev) => prev ?? { notes: [], totalPages: 1 },
   });
 
   const handleCreateNote = (values: NoteFormValues) => {
@@ -61,12 +62,15 @@ function NotesClient() {
           onPageChange={setPage}
         />
       )}
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <NoteForm
-          onSubmit={handleCreateNote}
-          onCancel={() => setIsModalOpen(false)}
-        />
-      </Modal>
+      {isModalOpen && (
+        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+          <NoteForm
+            onSubmit={handleCreateNote}
+            onCancel={() => setIsModalOpen(false)}
+          />
+        </Modal>
+      )}
+
       <button onClick={() => setIsModalOpen(true)}>Create Note</button>
     </div>
   );

@@ -35,7 +35,6 @@ export const fetchNotes = async (
 ): Promise<FetchNotesResponse> => {
   const { data } = await instance.get<FetchNotesResponse>("", {
     params,
-    headers,
   });
   return data;
 };
@@ -43,11 +42,11 @@ export const fetchNotes = async (
 export const createNote = async (
   note: Omit<Note, "id" | "createdAt" | "updatedAt">,
 ): Promise<Note> => {
-  const { data } = await instance.post<Note>("", note, { headers });
+  const { data } = await instance.post<Note>("", note);
   return data;
 };
 
 export const deleteNote = async (id: string): Promise<Note> => {
-  const { data } = await instance.delete<Note>(`/${id}`, { headers });
+  const { data } = await instance.delete<Note>(`/${id}`);
   return data;
 };
