@@ -26,14 +26,14 @@ export interface FetchNotesResponse {
 }
 
 export const fetchNoteById = async (id: string): Promise<Note> => {
-  const { data } = await instance.get(`/${id}`);
+  const { data } = await instance.get<Note>(`/${id}`);
   return data;
 };
 
 export const fetchNotes = async (
   params: FetchNotesParams = {},
 ): Promise<FetchNotesResponse> => {
-  const { data } = await axios.get<FetchNotesResponse>(BASE_URL, {
+  const { data } = await instance.get<FetchNotesResponse>("", {
     params,
     headers,
   });
@@ -43,11 +43,11 @@ export const fetchNotes = async (
 export const createNote = async (
   note: Omit<Note, "id" | "createdAt" | "updatedAt">,
 ): Promise<Note> => {
-  const { data } = await axios.post<Note>(BASE_URL, note, { headers });
+  const { data } = await instance.post<Note>("", note, { headers });
   return data;
 };
 
 export const deleteNote = async (id: string): Promise<Note> => {
-  const { data } = await axios.delete<Note>(`${BASE_URL}/${id}`, { headers });
+  const { data } = await instance.delete<Note>(`/${id}`, { headers });
   return data;
 };

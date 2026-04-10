@@ -22,6 +22,11 @@ function NotesClient() {
     return () => clearTimeout(timer);
   }, [search]);
 
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    setPage(1);
+  };
+
   const { data, isLoading, error } = useQuery({
     queryKey: ["notes", debouncedSearch, page],
     queryFn: () =>
@@ -43,7 +48,7 @@ function NotesClient() {
 
   return (
     <div>
-      <SearchBox value={search} onChange={setSearch} />
+      <SearchBox value={search} onChange={handleSearchChange} />
       {data?.notes.length ? (
         <NoteList notes={data.notes} />
       ) : (
